@@ -32,7 +32,8 @@ app.get('*', (request, response, next) => {
       response.status(200).send(template({
         root: renderToString(<RouterContext {...renderProps} />),
         css: new cleancss().minify(jss.sheets.toString()).styles,
-        jsBundle: clientAssets.main.js
+        jsBundle: clientAssets.main.js,
+        cssBundle: clientAssets.main.css,
       }));
     } else {
       response.status(404).send('Not found');

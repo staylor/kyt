@@ -9,6 +9,7 @@ const clientWebpackConfig = require('./../../config/webpack.prod.client');
 const serverWebpackConfig = require('./../../config/webpack.prod.server');
 const baseConfig = require('./../../config/webpack.base');
 const merge = require('webpack-merge');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = (program) => {
   // Comment the following if you want
@@ -46,8 +47,41 @@ module.exports = (program) => {
   let clientCompiler = null;
   let serverCompiler = null;
 
-  const clientConfig = merge.smart(baseConfig(clientOptions), clientWebpackConfig(clientOptions));
-  const serverConfig = merge.smart(baseConfig(serverOptions), serverWebpackConfig(serverOptions));
+  let clientConfig = merge.smart(baseConfig(clientOptions), clientWebpackConfig(clientOptions));
+  clientConfig = merge.smart(clientConfig, {
+    plugins: [
+      new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true }),
+    ],
+    module: {
+      loaders: [
+        {
+          test: /\.css$/,
+          loader: ExtractTextPlugin.extract({
+            notExtractLoader: 'style-loader',
+            loader: 'css-loader?modules=true&&localIdentName=[name]-[local]--[hash:base64:5]',
+          }),
+        },
+      ],
+    },
+  });
+
+  let serverConfig = merge.smart(baseConfig(serverOptions), serverWebpackConfig(serverOptions));
+  serverConfig = merge.smart(serverConfig, {
+    module: {
+      loaders: [
+        {
+          test: /\.css$/,
+          loaders: [
+            'fake-style',
+            {
+              loader: 'css-loader',
+              query: { modules: true, localIdentName: '[name]-[local]--[hash:base64:5]' }
+            },
+          ],
+        },
+      ],
+    },
+  });
 
   console.log('🔥  Starting production build...');
 

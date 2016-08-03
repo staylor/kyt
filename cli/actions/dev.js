@@ -50,7 +50,39 @@ module.exports = (program) => {
   let serverCompiler = null;
 
   clientConfig = merge.smart(baseConfig(clientOptions), clientConfig(clientOptions));
+  clientConfig = merge.smart(clientConfig, {
+    module: {
+      loaders: [
+        {
+          test: /\.css$/,
+          loaders: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              query: { modules: true, sourceMap: true, localIdentName: '[name]-[local]--[hash:base64:5]' }
+            },
+          ],
+        },
+      ],
+    },
+  });
   serverConfig = merge.smart(baseConfig(serverOptions), serverConfig(serverOptions));
+  serverConfig = merge.smart(serverConfig, {
+    module: {
+      loaders: [
+        {
+          test: /\.css$/,
+          loaders: [
+            'fake-style',
+            {
+              loader: 'css-loader',
+              query: { modules: true, localIdentName: '[name]-[local]--[hash:base64:5]' }
+            },
+          ],
+        },
+      ],
+    },
+  });
 
   console.log('🔥  Starting development build...');
 
