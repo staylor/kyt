@@ -7,6 +7,8 @@
 
 ### `stylelint-config-kyt` upgrade. The upgrade involved updating the internal dependencies. Check out the changelog [here](/packages/stylelint-config-kyt/CHANGELOG.md).
 
+### `jest` upgraded from v16.0.0 to v19.0.2. See Jest [changelog here](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
+
 
 ## 0.4.1 (March 03, 2017)
 
