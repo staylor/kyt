@@ -1,4 +1,3 @@
-
 // Production webpack config for server code
 
 const webpack = require('webpack');
@@ -10,7 +9,10 @@ const postcssLoader = require('../utils/getPostcssLoader');
 const cssStyleLoaders = [
   {
     loader: 'css-loader/locals',
-    options: { modules: true, localIdentName: '[name]-[local]--[hash:base64:5]' },
+    options: {
+      modules: true,
+      localIdentName: '[name]-[local]--[hash:base64:5]',
+    },
   },
   postcssLoader,
 ];
@@ -51,6 +53,13 @@ module.exports = options => ({
   },
 
   plugins: [
-    new webpack.BannerPlugin({ banner: 'require("source-map-support").install();', raw: true, entryOnly: true }),
+    new webpack.BannerPlugin({
+      banner: 'require("source-map-support").install();',
+      raw: true,
+      entryOnly: true,
+    }),
+
+    // Scope Hoisting
+    new webpack.optimize.ModuleConcatenationPlugin(),
   ],
 });

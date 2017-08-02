@@ -1,9 +1,9 @@
-
 // Development webpack config for client code
 
 const webpack = require('webpack');
-const AssetsPlugin = require('assets-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 const clone = require('lodash.clonedeep');
+const path = require('path');
 const { clientSrcPath, buildPath, assetsBuildPath } = require('kyt-utils/paths')();
 const postcssLoader = require('../utils/getPostcssLoader');
 
@@ -16,7 +16,7 @@ const cssStyleLoaders = [
   postcssLoader,
 ];
 
-module.exports = (options) => {
+module.exports = options => {
   const main = [
     'babel-polyfill',
     `webpack-hot-middleware/client?reload=true&path=${options.clientURL.href}__webpack_hmr`,
@@ -25,7 +25,8 @@ module.exports = (options) => {
 
   // Because of an ie11 bug, 'react-hot-loader/patch' needs to come after 'babel-polyfill'
   // https://github.com/facebook/react/issues/8379#issuecomment-273489824
-  if (options.reactHotLoader) main.splice(main.indexOf('babel-polyfill') + 1, 0, 'react-hot-loader/patch');
+  if (options.reactHotLoader)
+    main.splice(main.indexOf('babel-polyfill') + 1, 0, 'react-hot-loader/patch');
 
   return {
     target: 'web',
@@ -69,9 +70,13 @@ module.exports = (options) => {
 
       new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
 
-      new AssetsPlugin({
-        filename: options.clientAssetsFile,
-        path: buildPath,
+      new WebpackAssetsManifest({
+        output: path.join(buildPath, options.clientAssetsFile),
+        space: 2,
+        writeToDisk: true,
+        fileExtRegex: /\.\w{2,4}\.(?:map|gz)$|\.\w+$/i,
+        merge: false,
+        publicPath: options.publicPath,
       }),
 
       new webpack.HotModuleReplacementPlugin(),
