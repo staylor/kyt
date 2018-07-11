@@ -92,7 +92,7 @@ module.exports = options => ({
     // Extract all 3rd party modules into a separate chunk
     // Only include vendor modules as needed,
     // https://github.com/webpack/webpack/issues/2372#issuecomment-213149173
-    new webpack.optimize.CommonsChunkPlugin({
+    new webpack.optimize.CommonsChunkPlugin(options.vendorOpts || {
       name: 'vendor',
       minChunks: ({ resource }) => /node_modules/.test(resource),
     }),

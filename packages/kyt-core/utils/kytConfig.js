@@ -20,6 +20,10 @@ module.exports = optionalConfig => {
     hasServer: true,
     debug: false,
     reactHotLoader: false,
+    vendorOpts: {
+      name: 'vendor',
+      minChunks: ({ resource }) => /node_modules/.test(resource),
+    },
   };
 
   const kytConfigPath = optionalConfig
